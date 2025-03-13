@@ -1,0 +1,134 @@
+#!/bin/bash
+
+cols=$(tput cols)
+
+max_colors=16
+colors_per_row=$((cols / 5))
+if ((colors_per_row > max_colors)); then
+	colors_per_row=$max_colors
+fi
+width=$((colors_per_row * 5 + 3))
+
+banner() {
+	local word=$1
+	local lenght=${#word}
+	printf '#%.0s' $(seq 1 $((width - 3)))
+	echo
+	printf '=%.0s' $(seq 1 $((width - 3)))
+	echo
+	printf '#%.0s' $(seq 1 $((width - 3)))
+	echo
+	echo -en "\e[2A\r\e[$((width/2 - lenght/2 - 3))C $word \e[1B"
+	echo
+}
+
+colors() {
+	local style=$1
+	for i in {0..255}; do
+		printf "\e[${1}38;5;${i}m%3d  \e[0m" $i
+		if (( (i + 1) % colors_per_row == 0 )); then
+			echo
+		fi
+	done
+	echo
+}
+
+echo
+banner 256colors
+echo
+echo "This script displays the 256 colors supported by most modern terminals." | fold -w $((width - 4))
+echo "Each color is referenced using the ANSI escape sequence for 256 colors." | fold -w $((width - 4))
+echo "The syntax for setting the color is: \e[38;5;NUMBERm, where NUMBER is the color index (0-255)." | fold -w $((width - 4))
+echo "For example, \e[38;5;196m sets the color to bright red." | fold -w $((width - 4))
+echo "To reset the color back to default, use \e[0m." | fold -w $((width - 4))
+echo
+echo "Preview of selected styles:" | fold -w $((width - 4))
+echo
+
+if [[ $# -eq 0 ]]; then
+	echo
+	banner STANDARD
+	colors
+	echo
+fi
+
+while [[ $# -ne 0 ]]; do
+	case $1 in
+	    0)
+	        echo
+	        banner STANDARD
+	        colors
+	        echo
+	        shift
+	    ;;
+		1)
+			echo
+			banner BOLD
+			colors "1;"
+			echo
+			shift
+		;;
+	    2)
+	        echo
+	        banner DIM
+	        colors "2;"
+	        echo
+	        shift
+	    ;;
+        3)
+            echo
+            banner ITALIC
+            colors "3;"
+            echo
+            shift
+        ;;
+        4)
+            echo
+            banner UNDERLINE
+            colors "4;"
+            echo
+            shift
+        ;;
+        5)
+            echo
+            banner BLINK
+            colors "5;"
+            echo
+            shift
+        ;;
+        6)
+            echo
+            banner BLINK
+            colors "6;"
+            echo
+            shift
+        ;;
+        7)
+            echo
+            banner BACKGROUND
+            colors "7;"
+            echo
+            shift
+        ;;
+        8)
+            echo
+            banner HIDDEN
+            colors "8;"
+            echo
+            shift
+        ;;
+        9)
+            echo
+            banner STRIKE-THROUGH
+            colors "9;"
+            echo
+            shift
+        ;;
+        *)
+			echo
+			echo -e "\e[5;38;5;9mThere is no '$1' style...\e[0m"
+			echo
+			shift
+        ;;
+	esac
+done
