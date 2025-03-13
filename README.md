@@ -1,4 +1,4 @@
-# 256colors
+# 256colors 🎨
 
 ## About
 `256colors` is a Bash script that demonstrates ANSI escape sequences for 256 colors. It dynamically adjusts the display to fit the terminal width and provides various text styles based on user input.
