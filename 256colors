@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# 256colors cheatsheet script made by BuriXon-code (c) 2025
+
 cols=$(tput cols)
 
 max_colors=16
